@@ -98,13 +98,13 @@ app.put('/api/admin/users/:id/role', checkAdmin, (req, res) => {
 });
 
 app.get('/api/admin/orders', checkAdmin, (req, res) => {
-    const orders = db.prepare(\`
+    const orders = db.prepare(`
         SELECT o.*, u.name as client_name, c.name as courier_name 
         FROM orders o 
         LEFT JOIN users u ON o.user_id = u.id 
         LEFT JOIN users c ON o.courier_id = c.id
         ORDER BY o.created_at DESC
-    \`).all();
+    `).all();
     res.json(orders);
 });
 
@@ -117,10 +117,10 @@ app.put('/api/admin/orders/:id/status', checkAdmin, (req, res) => {
     const user = db.prepare('SELECT * FROM users WHERE id=?').get(order.user_id);
     
     if (status === 'DELIVERING') {
-        notifyClient(user.telegram_id, \`Ваш заказ #\${orderId} передан курьеру и скоро будет у вас!\`);
-        notifyCouriers(\`Заказ #\${orderId} готов к доставке.\`);
+        notifyClient(user.telegram_id, `Ваш заказ #${orderId} передан курьеру и скоро будет у вас!`);
+        notifyCouriers(`Заказ #${orderId} готов к доставке.`);
     } else if (status === 'COMPLETED') {
-        notifyClient(user.telegram_id, \`Ваш заказ #\${orderId} доставлен. Спасибо, что выбрали нас!\`);
+        notifyClient(user.telegram_id, `Ваш заказ #${orderId} доставлен. Спасибо, что выбрали нас!`);
     }
     
     res.json({ success: true });
@@ -140,7 +140,7 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(\`Server running on port \${PORT}\`);
+    console.log(`Server running on port ${PORT}`);
     bot.launch().then(() => {
         console.log('Telegram bot started');
     }).catch(console.error);
