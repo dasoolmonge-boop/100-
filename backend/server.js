@@ -11,6 +11,17 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { execSync } from 'child_process';
+import fs from 'fs';
+
+console.log('Building frontend (React/Vite) before starting server...');
+try {
+  execSync('npm run build', { stdio: 'inherit', cwd: path.join(__dirname, '..') });
+  console.log('Frontend built successfully!');
+} catch (error) {
+  console.error('Failed to build frontend:', error);
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
